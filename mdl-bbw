@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasias BBW</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://raw.githubusercontent.com/welding30001994/IMAGENES-CC/refs/heads/main/fushia-minimalist-wallpaper-free-photo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        /* Capa de opacidad en el fondo */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* Aquí controlas la opacidad del fondo */
+            z-index: -1; /* Asegura que el contenido esté encima del fondo */
+        }
+        header {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+        }
+        .navegador ul {
+            list-style: none;
+            padding: 0;
+        }
+        .navegador ul li {
+            display: inline;
+            margin: 0 10px;
+        }
+        .navegador ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .navegador ul li a:hover {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+        .contenedor-grifd {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 10px auto;
+            max-width: 90%;
+            min-height: 500px;
+        }
+        .grifd-boton-arriba {
+            margin-bottom: 20px;
+        }
+        .grifd-boton {
+            background: #444;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .grifd {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .grifd .image {
+            width: 300px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .grifd .image img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+        }
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            margin-top: auto;
+        }
+        @media (max-width: 400px) {
+            .navegador ul {
+                display: inline;
+                flex-direction: column-reverse;
+                align-items: center;
+            }
+            .navegador ul li {
+                display: block;
+                margin: 45px 0;
+            }
+            .grifd {
+                flex-direction: column;
+                align-items: center;
+            }
+            .grifd .image {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>FANTASIAS BBW</h1>
+        <nav class="navegador">
+            <ul>
+                <li><a href="#"><i class="fas fa-home"></i> INICIO</a></li>
+                <li><a href="#"><i class="fas fa-image"></i> GALERIA</a></li>
+                <li><a href="#"><i class="fas fa-comments"></i> CHAT</a></li>
+                <li><a href="#"><i class="fas fa-phone"></i> CONTACTO</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="contenedor-grifd">
+        <section class="grifd-boton-arriba">
+            <input type="file" id="upload" accept="image/*" style="display:none;">
+            <button class="grifd-boton" onclick="document.getElementById('upload').click();">
+                <i class="fas fa-cloud-upload-alt"></i> SUBIR FOTOS
+            </button>
+        </section>
+        <section class="grifd" id="gallery"></section>
+    </div>
+
+    <footer>
+        <p>Bienvenidos a Fantasía BBW</p>
+    </footer>
+
+    <script>
+        document.getElementById('upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = 'Imagen subida';
+                    const div = document.createElement('div');
+                    div.classList.add('image');
+                    div.appendChild(img);
+                    document.getElementById('gallery').appendChild(div);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+
+</body>
+</html>
