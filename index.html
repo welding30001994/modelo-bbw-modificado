@@ -1,4 +1,654 @@
-     document.querySelectorAll('.close-order').forEach(button => {
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Trader - Futuristic Trading App</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7b00ff;
+            --bg-dark: #0a0e17;
+            --bg-light: #141a2b;
+            --text: #e0e0e0;
+            --profit: #00ff9d;
+            --loss: #ff3d71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, var(--bg-light), var(--bg-dark));
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .account-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .balance {
+            font-size: 1rem;
+            background: rgba(0, 242, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chart-container {
+            height: 40vh;
+            background-color: var(--bg-light);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(0, 242, 255, 0.1);
+        }
+        
+        .chart {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-light);
+        }
+        
+        .price-display {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background-color: var(--bg-light);
+            border-bottom: 1px solid rgba(0, 242, 255, 0.1);
+        }
+        
+        .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .price-up {
+            color: var(--profit);
+        }
+        
+        .price-down {
+            color: var(--loss);
+        }
+        
+        .change {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .asset-selector {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px;
+            gap: 10px;
+            background-color: var(--bg-light);
+            scrollbar-width: none;
+        }
+        
+        .asset-selector::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .asset {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: rgba(123, 0, 255, 0.2);
+            border: 1px solid var(--secondary);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .asset.active {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: transparent;
+        }
+        
+        .trading-panel {
+            padding: 15px;
+            background-color: var(--bg-dark);
+        }
+        
+        .trade-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-buy {
+            background: linear-gradient(45deg, var(--profit), #00b383);
+            color: white;
+        }
+        
+        .btn-sell {
+            background: linear-gradient(45deg, var(--loss), #b3002d);
+            color: white;
+        }
+        
+        .trade-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .input-group label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .input-group input, .input-group select {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            background-color: var(--bg-light);
+            color: var(--text);
+        }
+        
+        .orders-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(0, 242, 255, 0.1);
+        }
+        
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .order {
+            background-color: var(--bg-light);
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid transparent;
+        }
+        
+        .order-buy {
+            border-left-color: var(--profit);
+        }
+        
+        .order-sell {
+            border-left-color: var(--loss);
+        }
+        
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        
+        .order-pair {
+            font-weight: bold;
+        }
+        
+        .order-type {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .order-price {
+            text-align: right;
+        }
+        
+        .order-profit {
+            font-size: 0.9rem;
+        }
+        
+        .profit-positive {
+            color: var(--profit);
+        }
+        
+        .profit-negative {
+            color: var(--loss);
+        }
+        
+        .close-order {
+            background: none;
+            border: none;
+            color: var(--text);
+            opacity: 0.5;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .tab-bar {
+            display: flex;
+            background-color: var(--bg-light);
+            border-top: 1px solid rgba(0, 242, 255, 0.1);
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .history-container, .open-orders-container {
+            display: none;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .active-tab {
+            display: block;
+        }
+        
+        /* Efectos futuristas */
+        .glow-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.1;
+        }
+        
+        .glow-1 {
+            width: 200px;
+            height: 200px;
+            background: var(--primary);
+            top: -50px;
+            left: -50px;
+        }
+        
+        .glow-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--secondary);
+            bottom: -100px;
+            right: -100px;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.1; }
+            50% { opacity: 0.15; }
+            100% { opacity: 0.1; }
+        }
+        
+        .pulse {
+            animation: pulse 3s infinite ease-in-out;
+        }
+        
+        /* Simulación de gráfico */
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .chart-candles {
+            position: absolute;
+            width: 100%;
+            height: 80%;
+            top: 10%;
+            left: 0;
+        }
+        
+        .candle {
+            position: absolute;
+            width: 5px;
+            background-color: var(--profit);
+            bottom: 50%;
+        }
+        
+        .candle.wick {
+            width: 1px;
+            background-color: var(--text);
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="glow-effect">
+            <div class="glow glow-1 pulse"></div>
+            <div class="glow glow-2 pulse"></div>
+        </div>
+        
+        <div class="header">
+            <div class="logo">QUANTUM TRADER</div>
+            <div class="account-info">
+                <div class="balance">$10,000.00</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="chart-container">
+                <div class="chart" id="tradingChart">
+                    <!-- Gráfico se generará con JavaScript -->
+                    <div class="chart-placeholder">
+                        <div class="chart-line"></div>
+                        <div class="chart-candles" id="candlesContainer"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="price-display">
+                <div>
+                    <div class="asset-name">EUR/USD</div>
+                    <div class="timeframe">M15 - 19:45</div>
+                </div>
+                <div class="price-info">
+                    <div class="price price-up">1.08542</div>
+                    <div class="change price-up">+0.0021 (0.19%)</div>
+                </div>
+            </div>
+            
+            <div class="asset-selector">
+                <div class="asset active">EUR/USD</div>
+                <div class="asset">GBP/USD</div>
+                <div class="asset">USD/JPY</div>
+                <div class="asset">XAU/USD</div>
+                <div class="asset">BTC/USD</div>
+                <div class="asset">ETH/USD</div>
+                <div class="asset">AAPL</div>
+                <div class="asset">TSLA</div>
+            </div>
+            
+            <div class="trading-panel">
+                <div class="trade-buttons">
+                    <button class="btn btn-buy" id="buyBtn">BUY</button>
+                    <button class="btn btn-sell" id="sellBtn">SELL</button>
+                </div>
+                
+                <div class="trade-form">
+                    <div class="input-group">
+                        <label for="volume">VOLUME (LOTS)</label>
+                        <input type="number" id="volume" value="0.1" step="0.1" min="0.1" max="10">
+                    </div>
+                    <div class="input-group">
+                        <label for="stopLoss">STOP LOSS (PIPS)</label>
+                        <input type="number" id="stopLoss" value="20">
+                    </div>
+                    <div class="input-group">
+                        <label for="takeProfit">TAKE PROFIT (PIPS)</label>
+                        <input type="number" id="takeProfit" value="40">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="orders-container">
+                <div class="tab-bar">
+                    <div class="tab active" data-tab="open-orders">OPEN ORDERS</div>
+                    <div class="tab" data-tab="history">HISTORY</div>
+                </div>
+                
+                <div class="open-orders-container active-tab" id="open-orders">
+                    <div class="section-title">
+                        <h3>OPEN POSITIONS</h3>
+                        <span>3</span>
+                    </div>
+                    
+                    <div class="orders-list" id="openOrdersList">
+                        <!-- Órdenes abiertas se generarán dinámicamente -->
+                    </div>
+                </div>
+                
+                <div class="history-container" id="history">
+                    <div class="section-title">
+                        <h3>TRADE HISTORY</h3>
+                        <span>24</span>
+                    </div>
+                    
+                    <div class="orders-list" id="historyList">
+                        <!-- Historial de órdenes se generará dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulación de datos de mercado
+        const assets = {
+            'EUR/USD': { price: 1.08542, change: 0.0021, pctChange: 0.19, trend: 'up' },
+            'GBP/USD': { price: 1.26580, change: -0.0015, pctChange: -0.12, trend: 'down' },
+            'USD/JPY': { price: 151.342, change: 0.205, pctChange: 0.14, trend: 'up' },
+            'XAU/USD': { price: 2185.42, change: 12.50, pctChange: 0.58, trend: 'up' },
+            'BTC/USD': { price: 68432.50, change: -1245.30, pctChange: -1.79, trend: 'down' },
+            'ETH/USD': { price: 3520.75, change: 42.30, pctChange: 1.22, trend: 'up' },
+            'AAPL': { price: 172.50, change: -1.20, pctChange: -0.69, trend: 'down' },
+            'TSLA': { price: 175.30, change: 3.45, pctChange: 2.01, trend: 'up' }
+        };
+        
+        let currentAsset = 'EUR/USD';
+        let balance = 10000.00;
+        let openOrders = [];
+        let tradeHistory = [];
+        
+        // Generar algunas órdenes de ejemplo
+        function generateSampleOrders() {
+            const orderTypes = ['buy', 'sell'];
+            const pairs = Object.keys(assets);
+            
+            for (let i = 0; i < 5; i++) {
+                const type = orderTypes[Math.floor(Math.random() * orderTypes.length)];
+                const pair = pairs[Math.floor(Math.random() * pairs.length)];
+                const volume = (Math.random() * 2 + 0.1).toFixed(1);
+                const openPrice = assets[pair].price + (type === 'buy' ? -0.0005 : 0.0005);
+                const currentPrice = assets[pair].price;
+                const profit = type === 'buy' 
+                    ? (currentPrice - openPrice) * volume * 100000
+                    : (openPrice - currentPrice) * volume * 100000;
+                
+                openOrders.push({
+                    id: Date.now() + i,
+                    pair: pair,
+                    type: type,
+                    volume: volume,
+                    openPrice: openPrice.toFixed(5),
+                    currentPrice: currentPrice.toFixed(5),
+                    stopLoss: (openPrice + (type === 'buy' ? -0.0020 : 0.0020)).toFixed(5),
+                    takeProfit: (openPrice + (type === 'buy' ? 0.0040 : -0.0040)).toFixed(5),
+                    profit: profit.toFixed(2),
+                    openTime: new Date(Date.now() - Math.random() * 86400000).toLocaleTimeString()
+                });
+            }
+            
+            for (let i = 0; i < 15; i++) {
+                const type = orderTypes[Math.floor(Math.random() * orderTypes.length)];
+                const pair = pairs[Math.floor(Math.random() * pairs.length)];
+                const volume = (Math.random() * 2 + 0.1).toFixed(1);
+                const openPrice = (assets[pair].price + (Math.random() - 0.5) * 0.01).toFixed(5);
+                const closePrice = (parseFloat(openPrice) + (type === 'buy' ? Math.random() * 0.02 : -Math.random() * 0.02)).toFixed(5);
+                const profit = type === 'buy' 
+                    ? (closePrice - openPrice) * volume * 100000
+                    : (openPrice - closePrice) * volume * 100000;
+                
+                tradeHistory.push({
+                    id: Date.now() + i + 1000,
+                    pair: pair,
+                    type: type,
+                    volume: volume,
+                    openPrice: openPrice,
+                    closePrice: closePrice,
+                    profit: profit.toFixed(2),
+                    openTime: new Date(Date.now() - Math.random() * 7 * 86400000).toLocaleString(),
+                    closeTime: new Date(Date.now() - Math.random() * 7 * 86400000).toLocaleString()
+                });
+            }
+        }
+        
+        // Actualizar el precio actual
+        function updateCurrentPrice() {
+            const asset = assets[currentAsset];
+            const priceElement = document.querySelector('.price');
+            const changeElement = document.querySelector('.change');
+            
+            // Simular pequeñas fluctuaciones de precio
+            const fluctuation = (Math.random() - 0.5) * 0.0005;
+            asset.price += fluctuation;
+            
+            // Actualizar elementos del DOM
+            priceElement.textContent = asset.price.toFixed(5);
+            changeElement.textContent = `${asset.change >= 0 ? '+' : ''}${asset.change.toFixed(4)} (${asset.pctChange >= 0 ? '+' : ''}${asset.pctChange.toFixed(2)}%)`;
+            
+            // Actualizar clases para color
+            priceElement.className = asset.trend === 'up' ? 'price price-up' : 'price price-down';
+            changeElement.className = asset.trend === 'up' ? 'change price-up' : 'change price-down';
+            
+            // Actualizar ganancias/pérdidas de órdenes abiertas
+            updateOpenOrdersProfit();
+            
+            // Actualizar gráfico
+            updateChart();
+            
+            // Actualizar cada segundo (simulación de tiempo real)
+            setTimeout(updateCurrentPrice, 1000);
+        }
+        
+        // Actualizar ganancias/pérdidas de órdenes abiertas
+        function updateOpenOrdersProfit() {
+            openOrders.forEach(order => {
+                if (order.pair === currentAsset) {
+                    const currentPrice = assets[order.pair].price;
+                    order.currentPrice = currentPrice.toFixed(5);
+                    order.profit = (order.type === 'buy' 
+                        ? (currentPrice - parseFloat(order.openPrice)) * order.volume * 100000
+                        : (parseFloat(order.openPrice) - currentPrice) * order.volume * 100000).toFixed(2);
+                }
+            });
+            
+            renderOpenOrders();
+        }
+        
+        // Renderizar órdenes abiertas
+        function renderOpenOrders() {
+            const openOrdersList = document.getElementById('openOrdersList');
+            openOrdersList.innerHTML = '';
+            
+            const currentOrders = openOrders.filter(order => order.pair === currentAsset);
+            document.querySelector('#open-orders .section-title span').textContent = currentOrders.length;
+            
+            currentOrders.forEach(order => {
+                const orderElement = document.createElement('div');
+                orderElement.className = `order order-${order.type}`;
+                orderElement.innerHTML = `
+                    <div class="order-info">
+                        <div class="order-pair">${order.pair}</div>
+                        <div class="order-type">${order.type.toUpperCase()} ${order.volume} LOTS • ${order.openTime}</div>
+                    </div>
+                    <div class="order-price">
+                        <div>${order.currentPrice}</div>
+                        <div class="order-profit ${parseFloat(order.profit) >= 0 ? 'profit-positive' : 'profit-negative'}">
+                            ${parseFloat(order.profit) >= 0 ? '+' : ''}${order.profit}
+                        </div>
+                    </div>
+                    <button class="close-order" data-id="${order.id}">×</button>
+                `;
+                openOrdersList.appendChild(orderElement);
+            });
+            
+            // Agregar event listeners para cerrar órdenes
+            document.querySelectorAll('.close-order').forEach(button => {
                 button.addEventListener('click', function() {
                     const orderId = parseInt(this.getAttribute('data-id'));
                     closeOrder(orderId);
@@ -187,3 +837,14 @@
             generateSampleOrders();
             setupAssetSelector();
             setupTabs();
+            setupTradeButtons();
+            updateCurrentPrice();
+            renderOpenOrders();
+            renderHistory();
+        }
+        
+        // Iniciar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
