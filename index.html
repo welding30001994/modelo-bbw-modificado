@@ -40,7 +40,7 @@
         /* Estilos para la página de autenticación */
         .auth-container {
             max-width: 500px;
-            margin: auto;
+            margin: 2rem auto;
             padding: 2rem;
             background: rgba(26, 26, 46, 0.8);
             border-radius: 15px;
@@ -180,8 +180,8 @@
             display: block;
         }
 
-        /* Estilos para la página principal */
-        .home-container {
+        /* Estilos para el dashboard */
+        .dashboard {
             display: none;
             flex-direction: column;
             min-height: 100vh;
@@ -190,7 +190,7 @@
         .main-header {
             background: rgba(26, 26, 46, 0.9);
             backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
+            padding: 1rem;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -203,6 +203,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
 
         .main-nav {
@@ -229,50 +246,80 @@
         .content-container {
             max-width: 1200px;
             margin: 2rem auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
             flex: 1;
+            width: 100%;
         }
 
-        .book-container {
-            display: flex;
-            flex-direction: column;
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
+            padding: 1rem;
         }
 
-        .post-page {
+        .post-card {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
             position: relative;
+            overflow: hidden;
         }
 
-        .post-page:hover {
+        .post-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(110, 72, 170, 0.3);
         }
 
-        .page-number {
-            position: absolute;
-            top: -15px;
-            left: -15px;
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .author-avatar {
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.8rem;
             font-weight: bold;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            color: var(--light-color);
         }
 
         .post-title {
             font-family: var(--font-heading);
             color: var(--secondary-color);
             margin-bottom: 1rem;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
 
         .post-content {
@@ -281,19 +328,18 @@
         }
 
         .post-image {
-            max-width: 100%;
+            width: 100%;
             border-radius: 10px;
             margin-bottom: 1rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            max-height: 300px;
+            object-fit: cover;
         }
 
-        .post-meta {
-            display: flex;
-            justify-content: space-between;
+        .post-date {
             color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1rem;
+            font-size: 0.8rem;
+            text-align: right;
         }
 
         /* Modal */
@@ -383,6 +429,7 @@
             .auth-container {
                 width: 90%;
                 padding: 1.5rem;
+                margin: 1rem auto;
             }
             
             .logo {
@@ -394,65 +441,101 @@
                 gap: 1rem;
             }
             
-            .content-container {
-                padding: 0 1rem;
+            .main-nav {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-button {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            
+            .posts-grid {
+                grid-template-columns: 1fr;
+                padding: 0.5rem;
+                gap: 1rem;
+            }
+            
+            .post-card {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-tabs {
+                flex-direction: column;
+            }
+            
+            .auth-tab {
+                padding: 0.5rem;
+            }
+            
+            .auth-tab.active::after {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
     <!-- Página de Autenticación -->
-    <div id="auth-page" class="auth-container">
-        <div class="logo-container">
-            <h1 class="logo">8 MAX TRADE</h1>
-            <p class="slogan">El futuro de las publicaciones exclusivas</p>
-        </div>
-        
-        <div class="auth-form-container">
-            <div class="auth-tabs">
-                <button class="auth-tab active" id="login-tab">Iniciar Sesión</button>
-                <button class="auth-tab" id="register-tab">Registrarse</button>
+    <div id="auth-page">
+        <div class="auth-container">
+            <div class="logo-container">
+                <h1 class="logo">8 MAX TRADE</h1>
+                <p class="slogan">El futuro de las publicaciones exclusivas</p>
             </div>
             
-            <!-- Formulario de Login -->
-            <form id="login-form" class="auth-form active">
-                <div class="input-group">
-                    <label for="login-email">Correo Electrónico</label>
-                    <input type="email" id="login-email" required>
+            <div class="auth-form-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="login-tab">Iniciar Sesión</button>
+                    <button class="auth-tab" id="register-tab">Registrarse</button>
                 </div>
-                <div class="input-group">
-                    <label for="login-password">Contraseña</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                <button type="submit" class="auth-button">Acceder</button>
-            </form>
+                
+                <!-- Formulario de Login -->
+                <form id="login-form" class="auth-form active">
+                    <div class="input-group">
+                        <label for="login-email">Correo Electrónico</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="auth-button">Acceder</button>
+                </form>
+                
+                <!-- Formulario de Registro -->
+                <form id="register-form" class="auth-form">
+                    <div class="input-group">
+                        <label for="register-email">Correo Electrónico</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="register-password">Contraseña</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="register-confirm">Confirmar Contraseña</label>
+                        <input type="password" id="register-confirm" required>
+                    </div>
+                    <button type="submit" class="auth-button">Registrarse</button>
+                </form>
+            </div>
             
-            <!-- Formulario de Registro -->
-            <form id="register-form" class="auth-form">
-                <div class="input-group">
-                    <label for="register-email">Correo Electrónico</label>
-                    <input type="email" id="register-email" required>
-                </div>
-                <div class="input-group">
-                    <label for="register-password">Contraseña</label>
-                    <input type="password" id="register-password" required>
-                </div>
-                <div class="input-group">
-                    <label for="register-confirm">Confirmar Contraseña</label>
-                    <input type="password" id="register-confirm" required>
-                </div>
-                <button type="submit" class="auth-button">Registrarse</button>
-            </form>
+            <div class="auth-message" id="auth-message"></div>
         </div>
-        
-        <div class="auth-message" id="auth-message"></div>
     </div>
     
-    <!-- Página Principal (oculta inicialmente) -->
-    <div id="home-page" class="home-container">
+    <!-- Dashboard (oculto inicialmente) -->
+    <div id="dashboard" class="dashboard">
         <header class="main-header">
             <div class="header-content">
                 <h1 class="logo">8 MAX TRADE</h1>
+                <div class="user-info" id="user-info">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span id="user-email"></span>
+                </div>
                 <nav class="main-nav">
                     <button id="new-post-btn" class="nav-button">+ Nueva Publicación</button>
                     <button id="logout-btn" class="nav-button">Cerrar Sesión</button>
@@ -461,7 +544,7 @@
         </header>
         
         <main class="content-container">
-            <div class="book-container" id="book-container">
+            <div class="posts-grid" id="posts-grid">
                 <!-- Las publicaciones se agregarán aquí dinámicamente -->
             </div>
         </main>
@@ -512,30 +595,32 @@
 
         // Elementos del DOM
         const authPage = document.getElementById('auth-page');
-        const homePage = document.getElementById('home-page');
+        const dashboard = document.getElementById('dashboard');
         const loginTab = document.getElementById('login-tab');
         const registerTab = document.getElementById('register-tab');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
         const authMessage = document.getElementById('auth-message');
-        const bookContainer = document.getElementById('book-container');
+        const postsGrid = document.getElementById('posts-grid');
         const newPostBtn = document.getElementById('new-post-btn');
         const postModal = document.getElementById('post-modal');
         const closeModal = document.querySelector('.close-modal');
         const postForm = document.getElementById('post-form');
         const logoutBtn = document.getElementById('logout-btn');
+        const userEmail = document.getElementById('user-email');
+        const userAvatar = document.getElementById('user-avatar');
 
         // Verificar estado de autenticación
         auth.onAuthStateChanged((user) => {
             if (user) {
                 // Usuario autenticado
                 authPage.style.display = 'none';
-                homePage.style.display = 'flex';
-                initHomePage();
+                dashboard.style.display = 'flex';
+                initDashboard(user);
             } else {
                 // Usuario no autenticado
                 authPage.style.display = 'block';
-                homePage.style.display = 'none';
+                dashboard.style.display = 'none';
                 initAuthPage();
             }
         });
@@ -614,8 +699,12 @@
             });
         }
 
-        // Inicializar página principal
-        function initHomePage() {
+        // Inicializar dashboard
+        function initDashboard(user) {
+            // Mostrar información del usuario
+            userEmail.textContent = user.email;
+            userAvatar.textContent = user.email.charAt(0).toUpperCase();
+            
             // Referencia a las publicaciones
             const postsRef = database.ref('posts');
             
@@ -648,7 +737,6 @@
                 const content = document.getElementById('post-content').value;
                 const imageFile = document.getElementById('post-image').files[0];
                 
-                const user = auth.currentUser;
                 if (!user) return;
                 
                 const newPostRef = postsRef.push();
@@ -696,7 +784,7 @@
             
             // Cargar y mostrar publicaciones
             postsRef.orderByChild('createdAt').on('value', (snapshot) => {
-                bookContainer.innerHTML = '';
+                postsGrid.innerHTML = '';
                 
                 const posts = [];
                 snapshot.forEach((childSnapshot) => {
@@ -710,9 +798,9 @@
                 posts.sort((a, b) => b.createdAt - a.createdAt);
                 
                 // Mostrar publicaciones
-                posts.forEach((post, index) => {
-                    const postElement = createPostElement(post, index + 1);
-                    bookContainer.appendChild(postElement);
+                posts.forEach((post) => {
+                    const postElement = createPostElement(post, user.uid);
+                    postsGrid.appendChild(postElement);
                 });
             });
             
@@ -738,13 +826,12 @@
         }
 
         // Crear elemento de publicación
-        function createPostElement(post, pageNumber) {
+        function createPostElement(post, currentUserId) {
             const postElement = document.createElement('div');
-            postElement.className = 'post-page';
+            postElement.className = 'post-card';
             
-            const pageNumElement = document.createElement('div');
-            pageNumElement.className = 'page-number';
-            pageNumElement.textContent = pageNumber;
+            const date = new Date(post.createdAt);
+            const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
             
             let titleElement = '';
             if (post.title) {
@@ -756,21 +843,58 @@
                 imageElement = <img src="${post.imageUrl}" alt="Imagen de publicación" class="post-image">;
             }
             
-            const date = new Date(post.createdAt);
-            const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            let deleteButton = '';
+            if (post.author.uid === currentUserId) {
+                deleteButton = <button class="action-btn delete-btn" data-id="${post.id}">🗑</button>;
+            }
             
             postElement.innerHTML = `
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="author-avatar">${post.author.email.charAt(0).toUpperCase()}</div>
+                        <span>${post.author.email}</span>
+                    </div>
+                    <div class="post-actions">
+                        ${deleteButton}
+                    </div>
+                </div>
                 ${titleElement}
                 <div class="post-content">${post.content.replace(/\n/g, '<br>')}</div>
                 ${imageElement}
-                <div class="post-meta">
-                    <span>Publicado por: ${post.author.email}</span>
-                    <span>${formattedDate}</span>
-                </div>
+                <div class="post-date">${formattedDate}</div>
             `;
             
-            postElement.prepend(pageNumElement);
+            // Agregar evento de eliminación si corresponde
+            if (post.author.uid === currentUserId) {
+                const deleteBtn = postElement.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm('¿Estás seguro de eliminar esta publicación?')) {
+                        deletePost(post.id, post.imageUrl);
+                    }
+                });
+            }
+            
             return postElement;
+        }
+
+        // Eliminar publicación
+        function deletePost(postId, imageUrl) {
+            // Eliminar de la base de datos
+            database.ref(posts/${postId}).remove()
+                .then(() => {
+                    // Eliminar imagen del storage si existe
+                    if (imageUrl) {
+                        const imageRef = storage.refFromURL(imageUrl);
+                        imageRef.delete().catch(error => {
+                            console.error('Error al eliminar imagen:', error);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al eliminar publicación:', error);
+                    showMessage('Error al eliminar la publicación', 'error');
+                });
         }
 
         // Mostrar mensajes
